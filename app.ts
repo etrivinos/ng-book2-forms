@@ -44,10 +44,11 @@ import {
             <input type="text"
               id="skuInput"
               placeholder="SKU"
-              [ngFormControl]="sku">
+              #sku="ngForm"
+              [ngFormControl]="myForm.controls['sku']">
     
-            <div *ngIf="!myForm.find('sku').valid && myForm.find('sku').touched" class="ui error message">SKU is invalid</div>
-            <div *ngIf="myForm.find('sku').hasError('required') && sku.touched" class="ui error message">SKU is required</div>
+            <div *ngIf="!sku.control.valid && sku.control.touched" class="ui error message">SKU is invalid</div>
+            <div *ngIf="sku.control.hasError('required') && sku.control.touched" class="ui error message">SKU is required</div>
           </div>
     
           <div *ngIf="!myForm.valid" class="ui error message">Form is invalid</div>
