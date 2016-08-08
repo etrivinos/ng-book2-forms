@@ -1,6 +1,6 @@
 # ng-book 2: Inventory App
 
-> An Angular 2 inventory app
+> An Angular 2 app
 
 ## Dependencies
 
