@@ -9,7 +9,7 @@
 import { Component, EventEmitter } from '@angular/core';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 
-import { FORM_DIRECTIVES } from '@angular/common';
+import { FORM_DIRECTIVES, FormBuilder, ControlGroup, Validators } from '@angular/common';
 
 /**
  * @FormApp: the top-level component for our application
@@ -21,11 +21,11 @@ import { FORM_DIRECTIVES } from '@angular/common';
     <div class="ui raised segment">
       <h2 class="ui header">Demo Form: Sku</h2>
     
-      <form #f="ngForm"
-        (ngSubmit)="onSubmit(f.value)"
+      <form [ngFormModel]="myForm"
+        (ngSubmit)="onSubmit(myForm.value)"
         class="ui form">
 
-          f.value: <pre>{{f.value | json}}</pre>
+          myForm.value: <pre>{{myForm.value | json}}</pre>
     
           <div class="field">
             <label for="skuInput">SKU</label>
@@ -33,7 +33,7 @@ import { FORM_DIRECTIVES } from '@angular/common';
             <input type="text"
               id="skuInput"
               placeholder="SKU"
-              ngControl="sku">
+              [ngFormControl]="myForm.controls['sku']">
           </div>
     
           <button type="submit" class="ui button">Submit</button>
@@ -42,6 +42,17 @@ import { FORM_DIRECTIVES } from '@angular/common';
   `
 })
 class FormApp {
+  myForm: ControlGroup;
+ 
+  constructor(fb: FormBuilder) {
+    this.myForm = fb.group({
+      'sku': [
+        '',
+        Validators.required
+      ]
+    });
+  }
+
   onSubmit(form: any): void {
     console.log('you submitted value:', form);
   }
