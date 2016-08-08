@@ -16,8 +16,7 @@ import {
   FORM_DIRECTIVES, 
   FormBuilder, 
   ControlGroup, 
-  Validators, 
-  AbstractControl} from '@angular/common';
+  Validators} from '@angular/common';
 
 /**
  * @FormApp: the top-level component for our application
@@ -39,7 +38,7 @@ import {
         (ngSubmit)="onSubmit(myForm.value)"
         class="ui form">
     
-          <div class="field" [class.error]="!sku.valid && sku.touched">
+          <div class="field" [class.error]="!myForm.find('sku').valid && myForm.find('sku').touched">
             <label for="skuInput">SKU</label>
             
             <input type="text"
@@ -47,8 +46,8 @@ import {
               placeholder="SKU"
               [ngFormControl]="sku">
     
-            <div *ngIf="!sku.valid && sku.touched" class="ui error message">SKU is invalid</div>
-            <div *ngIf="sku.hasError('required') && sku.touched" class="ui error message">SKU is required</div>
+            <div *ngIf="!myForm.find('sku').valid && myForm.find('sku').touched" class="ui error message">SKU is invalid</div>
+            <div *ngIf="myForm.find('sku').hasError('required') && sku.touched" class="ui error message">SKU is required</div>
           </div>
     
           <div *ngIf="!myForm.valid" class="ui error message">Form is invalid</div>
@@ -60,7 +59,6 @@ import {
 })
 class FormApp {
   myForm: ControlGroup;
-  sku: AbstractControl;
  
   constructor(fb: FormBuilder) {
     this.myForm = fb.group({
