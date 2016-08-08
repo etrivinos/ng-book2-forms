@@ -6,36 +6,53 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Component, EventEmitter } from '@angular/core';
+import { Component, 
+        EventEmitter } from '@angular/core';
+
 import {bootstrap} from '@angular/platform-browser-dynamic';
 
-import { FORM_DIRECTIVES, FormBuilder, ControlGroup, Validators } from '@angular/common';
+import { 
+  CORE_DIRECTIVES,
+  FORM_DIRECTIVES, 
+  FormBuilder, 
+  ControlGroup, 
+  Validators, 
+  AbstractControl} from '@angular/common';
 
 /**
  * @FormApp: the top-level component for our application
  */
 @Component({
   selector: 'demo-for-sku',
-  directives: [FORM_DIRECTIVES],
+  directives: [CORE_DIRECTIVES, FORM_DIRECTIVES],
+  styles: [`
+    .ui.form .error.message { display:block !important; }
+  `],
   template: `
     <div class="ui raised segment">
-      <h2 class="ui header">Demo Form: Sku</h2>
+      <h2 class="ui header">Demo Form: with validations (explicit)</h2>
     
+      myForm.valid: {{myForm.valid}}
+      sku.valid: {{sku.valid}}
+
       <form [ngFormModel]="myForm"
         (ngSubmit)="onSubmit(myForm.value)"
         class="ui form">
-
-          myForm.value: <pre>{{myForm.value | json}}</pre>
     
-          <div class="field">
+          <div class="field" [class.error]="!sku.valid && sku.touched">
             <label for="skuInput">SKU</label>
-
+            
             <input type="text"
               id="skuInput"
               placeholder="SKU"
-              [ngFormControl]="myForm.controls['sku']">
+              [ngFormControl]="sku">
+    
+            <div *ngIf="!sku.valid && sku.touched" class="ui error message">SKU is invalid</div>
+            <div *ngIf="sku.hasError('required') && sku.touched" class="ui error message">SKU is required</div>
           </div>
     
+          <div *ngIf="!myForm.valid" class="ui error message">Form is invalid</div>
+          
           <button type="submit" class="ui button">Submit</button>
       </form>
     </div>
@@ -43,6 +60,7 @@ import { FORM_DIRECTIVES, FormBuilder, ControlGroup, Validators } from '@angular
 })
 class FormApp {
   myForm: ControlGroup;
+  sku: AbstractControl;
  
   constructor(fb: FormBuilder) {
     this.myForm = fb.group({
@@ -51,11 +69,19 @@ class FormApp {
         Validators.required
       ]
     });
+
+    /*
+    Explicit set the control variable as an instance variable.
+    Pro: We can reference this variable anywhere in our component view.
+    Con: We have to setup as instance variable for every field in our form.
+     */
+    this.sku = this.myForm.controls['sku'];
   }
 
   onSubmit(form: any): void {
     console.log('you submitted value:', form);
   }
+
 }
 
 bootstrap(FormApp);
