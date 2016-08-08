@@ -82,6 +82,13 @@ class FormApp {
         Validators.compose([ Validators.required, skuValidator])
       ]
     });
+
+    // Watching for changes in the form
+    this.myForm.valueChanges.subscribe(
+      (form: any) => {
+        console.log('form changed to:', form);
+      }
+    );
   }
 
   onSubmit(form: any): void {
