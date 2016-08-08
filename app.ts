@@ -16,7 +16,8 @@ import {
   FORM_DIRECTIVES, 
   FormBuilder, 
   ControlGroup, 
-  Validators} from '@angular/common';
+  Validators,
+  Control} from '@angular/common';
 
 /**
  * @FormApp: the top-level component for our application
@@ -47,8 +48,21 @@ import {
               #sku="ngForm"
               [ngFormControl]="myForm.controls['sku']">
     
-            <div *ngIf="!sku.control.valid && sku.control.touched" class="ui error message">SKU is invalid</div>
-            <div *ngIf="sku.control.hasError('required') && sku.control.touched" class="ui error message">SKU is required</div>
+            <!-- SKU errors -->
+            <div *ngIf="!sku.control.valid && sku.control.touched" 
+              class="ui error message">
+                SKU is invalid
+            </div>
+            
+            <div *ngIf="sku.control.hasError('required') && sku.control.touched" 
+              class="ui error message">
+                SKU is required
+            </div>
+            
+            <div *ngIf="sku.control.hasError('invalidSku') && sku.control.touched" 
+              class="ui error message">
+                SKU must begin with <tt>123</tt>
+            </div>
           </div>
     
           <div *ngIf="!myForm.valid" class="ui error message">Form is invalid</div>
@@ -65,22 +79,21 @@ class FormApp {
     this.myForm = fb.group({
       'sku': [
         '',
-        Validators.required
+        Validators.compose([ Validators.required, skuValidator])
       ]
     });
-
-    /*
-    Explicit set the control variable as an instance variable.
-    Pro: We can reference this variable anywhere in our component view.
-    Con: We have to setup as instance variable for every field in our form.
-     */
-    this.sku = this.myForm.controls['sku'];
   }
 
   onSubmit(form: any): void {
     console.log('you submitted value:', form);
   }
 
+}
+
+function skuValidator(control: Control): { [s: string]: boolean } {
+  if (!control.value.match(/^123/)) {
+    return {invalidSku: true};
+  }
 }
 
 bootstrap(FormApp);
