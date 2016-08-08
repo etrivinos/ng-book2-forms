@@ -31,13 +31,24 @@ import {
   template: `
     <div class="ui raised segment">
       <h2 class="ui header">Demo Form: with validations (explicit)</h2>
-    
-      myForm.valid: {{myForm.valid}}
-      sku.valid: {{sku.valid}}
+
+      <div class="ui info message">
+        The product name is: {{productName}}
+      </div>
 
       <form [ngFormModel]="myForm"
         (ngSubmit)="onSubmit(myForm.value)"
         class="ui form">
+
+          <div class="field" [class.error]="!myForm.find('sku').valid && myForm.find('sku').touched">
+            <label for="skuInput">SKU</label>
+            
+            <input type="text"
+              id="productNameInput"
+              placeholder="Product Name"
+              [ngFormControl]="myForm.find('productName')"
+              [(ngModel)]="productName">
+          </div>
     
           <div class="field" [class.error]="!myForm.find('sku').valid && myForm.find('sku').touched">
             <label for="skuInput">SKU</label>
@@ -74,13 +85,15 @@ import {
 })
 class FormApp {
   myForm: ControlGroup;
+  productName: string;
  
   constructor(fb: FormBuilder) {
     this.myForm = fb.group({
       'sku': [
         '',
         Validators.compose([ Validators.required, skuValidator])
-      ]
+      ],
+      'productName': ['', Validators.required]
     });
 
     // Watching for changes in the form
